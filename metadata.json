@@ -1,0 +1,6 @@
+{
+  "name": "ECR Kolwezi — Church Management System",
+  "description": "Practice church management system for Église Cité de Restauration — Kolwezi, featuring Dashboard, Members, Attendance, Giving, and Events management.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
