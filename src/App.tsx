@@ -21,6 +21,7 @@ import {
   X,
   LogOut,
   KeyRound,
+  MessageSquareText,
 } from 'lucide-react';
 import {
   ActivityItem,
@@ -43,6 +44,7 @@ import {
 } from './utils/authUtils';
 import { SignInPage } from './pages/SignInPage';
 import { ChangePasswordModal } from './components/ChangePasswordModal';
+import { ECRAssistantPanel } from './components/ECRAssistantPanel';
 import { DashboardPage } from './pages/DashboardPage';
 import { MembersPage } from './pages/MembersPage';
 import { AttendancePage } from './pages/AttendancePage';
@@ -83,6 +85,7 @@ export default function App() {
   const [activePage, setActivePage] = useState<PageId>('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [assistantOpen, setAssistantOpen] = useState(false);
 
   // Topbar dropdown states
   const [openDropdown, setOpenDropdown] = useState<
@@ -808,6 +811,43 @@ export default function App() {
                     </button>
                   );
                 })}
+
+                {/* ECR Assistant Button inside Sidebar & Mobile Drawer (available across all 5 pages) */}
+                <div className="pt-2 mt-2 border-t border-slate-200/60">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAssistantOpen((v) => !v);
+                      setMobileSidebarOpen(false);
+                    }}
+                    className={`w-full flex items-center gap-3.5 px-5 py-3 lg:py-2.5 text-[13.5px] lg:text-[13px] transition-colors relative cursor-pointer ${
+                      assistantOpen
+                        ? 'text-[#0D62C6] font-semibold bg-blue-50/70'
+                        : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100/70 font-medium'
+                    }`}
+                  >
+                    {assistantOpen && (
+                      <span
+                        className="absolute left-0 top-1 bottom-1 w-[3.5px] bg-[#0D62C6] rounded-r"
+                        aria-hidden="true"
+                      />
+                    )}
+                    <span
+                      className={`shrink-0 ${
+                        assistantOpen ? 'text-[#0D62C6]' : 'text-[#D93025]'
+                      }`}
+                    >
+                      <MessageSquareText className="w-4 h-4" />
+                    </span>
+                    <span
+                      className={`${
+                        !sidebarOpen ? 'lg:hidden' : ''
+                      } whitespace-nowrap`}
+                    >
+                      ECR Assistant
+                    </span>
+                  </button>
+                </div>
               </nav>
             </div>
 
@@ -893,8 +933,32 @@ export default function App() {
               />
             )}
           </main>
+
+          {/* Right-hand Desktop Panel & Full-Screen Mobile Chat for ECR Assistant */}
+          <ECRAssistantPanel
+            isOpen={assistantOpen}
+            onClose={() => setAssistantOpen(false)}
+            state={state}
+            onSaveMember={handleSaveMember}
+            onSaveAttendance={handleSaveAttendance}
+            onSaveGiving={handleSaveGiving}
+            onSaveEvent={handleSaveEvent}
+          />
         </div>
       </div>
+
+      {/* Floating ECR Assistant Button when panel is closed (accessible from all 5 pages on desktop & phone) */}
+      {!assistantOpen && (
+        <button
+          type="button"
+          onClick={() => setAssistantOpen(true)}
+          aria-label="Open ECR Assistant"
+          className="fixed bottom-5 right-5 z-30 flex items-center gap-2 bg-[#D93025] hover:bg-[#B71C1C] text-white font-semibold text-xs sm:text-[13px] px-4 py-2.5 rounded-full shadow-lg hover:shadow-xl transition-all cursor-pointer border border-white/20"
+        >
+          <MessageSquareText className="w-4 h-4 shrink-0" />
+          <span>ECR Assistant</span>
+        </button>
+      )}
 
       {/* Change Password Modal accessible from Administrator Profile Menu */}
       <ChangePasswordModal
